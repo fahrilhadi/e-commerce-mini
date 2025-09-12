@@ -12,7 +12,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        // ambil produk terbaru, include relasi kategori & user (jika ada)
+        $products = Product::with(['category', 'user'])
+                        ->latest()
+                        ->paginate(3);
+
+        return view('product.index', compact('products'));
     }
 
     /**
@@ -34,9 +39,14 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($slug)
     {
-        //
+        // tampilkan detail produk
+        $product = Product::with(['category', 'user'])
+                        ->where('slug', $slug)
+                        ->firstOrFail();
+
+        return view('product.show', compact('product'));
     }
 
     /**

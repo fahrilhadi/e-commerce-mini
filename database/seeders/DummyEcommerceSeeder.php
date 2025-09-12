@@ -29,50 +29,72 @@ class DummyEcommerceSeeder extends Seeder
             'role'     => 'user',
         ]);
 
-        // 2. Create Category
-        $category = Category::create([
-            'name'        => 'Electronics',
-            'slug'        => Str::slug('Electronics'),
-            'description' => 'Gadgets and devices',
-        ]);
+        // 2. Tambah Category lain
+        $categories = [
+            ['name' => 'Fashion', 'description' => 'Clothing and accessories'],
+            ['name' => 'Books', 'description' => 'Fiction, non-fiction, and study materials'],
+            ['name' => 'Home Appliances', 'description' => 'Household electronics'],
+            ['name' => 'Sports', 'description' => 'Sporting goods and equipment'],
+            ['name' => 'Toys', 'description' => 'Kids toys and games'],
+            ['name' => 'Beauty', 'description' => 'Cosmetics and skincare'],
+        ];
 
-        // 3. Create Product
-        $product = Product::create([
-            'category_id' => $category->id,
-            'name'        => 'Wireless Headphones',
-            'slug'        => Str::slug('Wireless Headphones'),
-            'description' => 'High quality wireless headphones with noise cancelling feature.',
-            'price'       => 120.00,
-            'stock'       => 10,
-            'image'       => 'headphones.jpg',
-            'status'      => 'active',
-        ]);
+        foreach ($categories as $cat) {
+            Category::create([
+                'name'        => $cat['name'],
+                'slug'        => Str::slug($cat['name']),
+                'description' => $cat['description'],
+            ]);
+        }
 
-        // 4. Create Cart for User
-        $cart = Cart::create([
-            'user_id' => $user->id,
-        ]);
+        // 3. Tambah Produk Dummy
+        $products = [
+            ['category' => 'Fashion', 'name' => 'Casual T-Shirt', 'desc' => 'Comfortable cotton t-shirt', 'price' => 25.00, 'stock' => 50, 'image' => 'tshirt.jpg'],
+            ['category' => 'Books', 'name' => 'Laravel', 'desc' => 'Step by step Laravel guide', 'price' => 40.00, 'stock' => 20, 'image' => 'laravel-book.jpg'],
+            ['category' => 'Home Appliances', 'name' => 'Blender', 'desc' => 'Powerful kitchen blender', 'price' => 65.00, 'stock' => 15, 'image' => 'blender.jpg'],
+            ['category' => 'Sports', 'name' => 'Football', 'desc' => 'Professional size 5 football', 'price' => 30.00, 'stock' => 25, 'image' => 'football.jpg'],
+            ['category' => 'Toys', 'name' => 'Lego Classic Set', 'desc' => 'Creative Lego building blocks', 'price' => 55.00, 'stock' => 12, 'image' => 'lego.jpg'],
+            ['category' => 'Beauty', 'name' => 'Moisturizer Cream', 'desc' => 'Hydrating skincare cream', 'price' => 35.00, 'stock' => 30, 'image' => 'cream.jpg'],
+        ];
 
-        // 5. Add Cart Item
-        CartItem::create([
-            'cart_id'    => $cart->id,
-            'product_id' => $product->id,
-            'quantity'   => 1,
-        ]);
+        foreach ($products as $p) {
+            $category = Category::where('name', $p['category'])->first();
 
-        // 6. Create Order for User
-        $order = Order::create([
-            'user_id'      => $user->id,
-            'total_amount' => $product->price,
-            'status'       => 'pending',
-        ]);
+            $product = Product::create([
+                'category_id' => $category->id,
+                'name'        => $p['name'],
+                'slug'        => Str::slug($p['name']),
+                'description' => $p['desc'],
+                'price'       => $p['price'],
+                'stock'       => $p['stock'],
+                'image'       => $p['image'],
+                'status'      => 'active',
+            ]);
 
-        // 7. Add Order Item
-        OrderItem::create([
-            'order_id'   => $order->id,
-            'product_id' => $product->id,
-            'quantity'   => 1,
-            'price'      => $product->price,
-        ]);
+            // Tambah ke cart John Doe
+            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+            CartItem::create([
+                'cart_id'    => $cart->id,
+                'product_id' => $product->id,
+                'quantity'   => 1,
+            ]);
+
+            // Tambah ke order dummy John Doe
+            $order = Order::firstOrCreate(
+                ['user_id' => $user->id, 'status' => 'pending'],
+                ['total_amount' => 0]
+            );
+
+            OrderItem::create([
+                'order_id'   => $order->id,
+                'product_id' => $product->id,
+                'quantity'   => 1,
+                'price'      => $product->price,
+            ]);
+
+            // Update total order
+            $order->increment('total_amount', $product->price);
+        }
     }
 }

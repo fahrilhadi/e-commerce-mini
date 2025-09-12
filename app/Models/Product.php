@@ -17,6 +17,12 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    // Relasi ke User (pemilik / admin yang input produk)
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     // Relasi: Produk bisa ada di banyak order item
     public function orderItems()
     {
