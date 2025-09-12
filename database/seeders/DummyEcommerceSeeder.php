@@ -23,8 +23,8 @@ class DummyEcommerceSeeder extends Seeder
     {
         // 1. Create User
         $user = User::create([
-            'name'     => 'John Doe',
-            'email'    => 'johndoe@example.com',
+            'name'     => 'John',
+            'email'    => 'john@example.com',
             'password' => Hash::make('password'),
             'role'     => 'user',
         ]);
