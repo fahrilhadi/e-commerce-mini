@@ -21,10 +21,12 @@
                 <h3 class="text-sm font-medium text-gray-500">Total Users</h3>
                 <p class="mt-2 text-2xl font-bold text-gray-900">{{ $totalUsers }}</p>
             </div>
-            <div class="p-6 bg-white border border-gray-200 rounded-xl shadow">
-                <h3 class="text-sm font-medium text-gray-500">Total Products</h3>
-                <p class="mt-2 text-2xl font-bold text-green-600">{{ $totalProducts }}</p>
-            </div>
+            <a href="{{ route('admin.products.index') }}" class="block">
+                <div class="p-6 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition">
+                    <h3 class="text-sm font-medium text-gray-500">Total Products</h3>
+                    <p class="mt-2 text-2xl font-bold text-green-600">{{ $totalProducts }}</p>
+                </div>
+            </a>
             <div class="p-6 bg-white border border-gray-200 rounded-xl shadow">
                 <h3 class="text-sm font-medium text-gray-500">Pending Orders</h3>
                 <p class="mt-2 text-2xl font-bold text-yellow-600">{{ $pendingOrders }}</p>

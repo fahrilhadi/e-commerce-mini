@@ -11,15 +11,15 @@
                  Dashboard
               </a>
           @else
-              {{-- Tampilkan Add Post hanya jika role user dan sudah punya minimal 1 post --}}
-              @if(Auth::check() && Auth::user()->role === 'user' && isset($posts) && $posts->count() > 0)
-                <a href="{{ route('posts.create') }}" 
+              {{-- Tampilkan Add Post hanya jika role admin --}}
+              @if(Auth::check() && Auth::user()->role === 'admin' && (request()->routeIs('admin.products.index')))
+                <a href="{{ route('admin.products.create') }}" 
                 class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
-                + Add Post
+                + Add Product
                 </a>
               @endif
-              @if (request()->routeIs('posts.create','posts.edit','posts.show','admin.posts.show') && ! (request()->routeIs('admin.posts.show') && isset($post) && $post->status === 'pending'))
-                <a href="{{ route('dashboard') }}" 
+              @if (request()->routeIs('admin.products.create','admin.products.edit','admin.products.show'))
+                <a href="{{ route('admin.products.index') }}" 
                   class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
                   Back
                 </a>

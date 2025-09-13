@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
 {
@@ -12,7 +15,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        // ambil produk terbaru, include relasi kategori & user (jika ada)
+        $products = Product::with(['category', 'user'])
+                        ->latest()
+                        ->paginate(3);
+
+        return view('admin.product.index', compact('products'));
     }
 
     /**
@@ -20,7 +28,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('admin.product.create', compact('categories'));
     }
 
     /**
@@ -28,7 +37,32 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
+            'description' => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        Product::create([
+            'name'        => $request->name,
+            'slug'        => Str::slug($request->name),
+            'category_id' => $request->category_id,
+            'price'       => $request->price,
+            'stock'       => $request->stock,
+            'description' => $request->description,
+            'image'       => $imagePath,
+            'status'      => 'active',
+        ]);
+
+        return redirect()->route('admin.product.index')->with('success', 'Product created successfully.');
     }
 
     /**
