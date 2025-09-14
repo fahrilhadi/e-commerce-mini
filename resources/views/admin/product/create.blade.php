@@ -13,7 +13,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700">Product Name</label>
                 <input type="text" name="name" value="{{ old('name') }}"
-                    class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black/20">
+                    class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
                 @error('name') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -34,13 +34,13 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Price</label>
                     <input type="number" step="0.01" name="price" value="{{ old('price') }}"
-                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black/20">
+                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
                     @error('price') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Stock</label>
                     <input type="number" name="stock" value="{{ old('stock') }}"
-                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black/20">
+                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
                     @error('stock') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -48,7 +48,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700">Description</label>
                 <textarea name="description" rows="4"
-                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black/20">{{ old('description') }}</textarea>
+                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">{{ old('description') }}</textarea>
                 @error('description') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 

@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         // ambil produk terbaru, include relasi kategori & user (jika ada)
-        $products = Product::with(['category', 'user'])
+        $products = Product::with(['category'])
                         ->latest()
                         ->paginate(3);
 
