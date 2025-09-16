@@ -59,7 +59,7 @@
             </div>
 
             <div class="flex justify-end">
-                <button type="submit" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
+                <button type="submit" class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
                     Save Product
                 </button>
             </div>
