@@ -13,7 +13,6 @@
                 <table class="w-full text-left border-collapse table-fixed">
                     <thead>
                         <tr class="bg-gray-50 text-sm text-gray-600">
-                            <th class="py-3 px-4 border-b w-16">#</th>
                             <th class="py-3 px-4 border-b">Name</th>
                             <th class="py-3 px-4 border-b">Category</th>
                             <th class="py-3 px-4 border-b">Price</th>
@@ -24,7 +23,6 @@
                     <tbody>
                         @forelse ($products as $product)
                             <tr class="text-sm text-gray-700 hover:bg-gray-50">
-                                <td class="py-3 px-4 border-b">{{ $product->id }}</td>
                                 <td class="py-3 px-4 border-b">{{ Str::limit($product->name, 7, '...') }}</td>
                                 <td class="py-3 px-4 border-b">{{ $product->category->name ?? 'Uncategorized' }}</td>
                                 <td class="py-3 px-4 border-b">${{ number_format($product->price, 2) }}</td>

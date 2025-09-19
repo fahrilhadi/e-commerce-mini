@@ -4,58 +4,59 @@
     Create Product | E-Commerce Mini App
 @endsection
 
+@push('addon-styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
 @section('main-content')
-    <div class="max-w-2xl mx-auto px-4 py-8">
+    <div class="w-full max-w-2xl mx-auto px-4 py-8">
 
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5 border border-gray-200 rounded-xl shadow bg-white overflow-hidden p-6">
             @csrf
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Product Name</label>
-                <input type="text" name="name" value="{{ old('name') }}"
-                    class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
-                @error('name') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Product Name</label>
+                    <input type="text" name="name" value="{{ old('name') }}"
+                        class="@error('name') is-invalid @enderror w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Category</label>
-                <select name="category_id" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2">
-                    <option value="">-- Choose Category --</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('category_id') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select name="category_id" id="category" class="w-full category-select @error('category_id') is-invalid @enderror">
+                        <option value="">-- Select or type category --</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Price</label>
                     <input type="number" step="0.01" name="price" value="{{ old('price') }}"
-                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
-                    @error('price') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                        class="@error('price') is-invalid @enderror w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Stock</label>
                     <input type="number" name="stock" value="{{ old('stock') }}"
-                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
-                    @error('stock') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                        class="@error('stock') is-invalid @enderror w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea name="description" rows="4"
+                <textarea name="description" rows="2"
                         class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">{{ old('description') }}</textarea>
-                @error('description') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Image</label>
-                <input type="file" name="image" class="w-full mt-1 text-sm">
-                @error('image') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                    <input type="file" name="image" 
+                        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-black focus:ring-0">
             </div>
 
             <div class="flex justify-end">
@@ -66,3 +67,25 @@
         </form>
     </div>
 @endsection
+
+@push('addon-script')
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+        $('#category').select2({
+            tags: true,
+            placeholder: "Select or type a category",
+            allowClear: true,
+            createTag: function (params) {
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newTag: true
+                }
+            }
+        });
+    });
+    </script>
+@endpush

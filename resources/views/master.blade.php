@@ -33,18 +33,7 @@
             <span>{{ session('success') }}</span>
         </div>
     @endif
-    @if ($errors->has('all'))
-        <div id="toast"
-            class="fixed top-4 left-1/2 -translate-x-1/2 p-3 bg-gray-100 text-sm rounded-lg border border-gray-200 shadow 
-                opacity-0 -translate-y-4 transition-all duration-500 ease-out flex items-center gap-2">
-                
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0a12 12 0 1012 12A12.014 12.014 0 0012 0zm.75 17.25h-1.5v-1.5h1.5zm0-3h-1.5v-6h1.5z"/>
-            </svg>
-
-            <span>{{ $errors->first('all') }}</span>
-        </div>
-    @elseif ($errors->any())
+    @if ($errors->any())
         <div id="toast"
             class="fixed top-4 left-1/2 -translate-x-1/2 p-3 bg-gray-100 text-sm rounded-lg border border-gray-200 shadow 
                 opacity-0 -translate-y-4 transition-all duration-500 ease-out flex items-center gap-2">
