@@ -18,6 +18,8 @@ Route::get('/products/{slug}', [ProductController::class, 'show'])->name('produc
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->as('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('products', AdminProductController::class);
+    Route::get('/products/{slug}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::put('/products/{slug}', [ProductController::class, 'update'])->name('admin.products.update');
 });
 
 require __DIR__.'/auth.php';

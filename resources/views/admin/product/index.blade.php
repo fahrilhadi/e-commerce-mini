@@ -29,7 +29,7 @@
                                 <td class="py-3 px-4 border-b">{{ $product->stock }}</td>
                                 <td class="py-3 px-4 border-b">
                                     <div class="flex items-center space-x-2">
-                                        <a href="{{ route('admin.products.edit', $product->id) }}" 
+                                        <a href="{{ route('admin.products.edit', $product->slug) }}" 
                                            class="px-2 py-1 rounded-lg border border-gray-300 hover:border-black text-sm transition shadow">
                                             Edit
                                         </a>
@@ -46,7 +46,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-6 text-center text-gray-500">
+                                <td colspan="5" class="py-6 text-center text-gray-500">
                                     No products found.
                                 </td>
                             </tr>

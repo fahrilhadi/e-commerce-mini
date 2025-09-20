@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -106,17 +107,83 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $slug)
     {
-        //
+        // Get product with its category
+        $product = Product::where('slug', $slug)->firstOrFail();
+        $categories = Category::all();
+
+        return view('admin.product.edit', compact('product', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $slug)
     {
-        //
+        $product = Product::where('slug', $slug)->firstOrFail();
+
+        $validator = Validator::make($request->all(),[
+            'name'        => 'required|string|max:255',
+            'category_id' => 'required',
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
+            'description' => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ],[
+            'name.required'        => 'Product name is required',
+            'category_id.required' => 'Category is required',
+            'price.required'       => 'Price is required',
+            'price.numeric'        => 'Price must be a number', 
+            'price.min'            => 'Price cannot be negative',
+            'stock.required'       => 'Stock is required',
+            'stock.integer'        => 'Stock must be a whole number',
+            'stock.min'            => 'Stock cannot be negative',
+            'image.image'          => 'File must be an image',
+            'image.mimes'          => 'Image must be jpg, jpeg, or png',
+            'image.max'            => 'Image size cannot exceed 2MB'
+        ]);
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Handle category
+        $category_id = $request->category_id;
+        // If category_id is not numeric, it's a new category
+        if (!is_numeric($category_id)) {
+            $category = Category::create([
+                'name' => $category_id,
+                'slug' => Str::slug($category_id)
+            ]);
+            $category_id = $category->id;
+        }
+
+        // Handle image
+        $imagePath = $product->image; // Keep existing image by default
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        $product->update([
+            'name'        => $request->name,
+            'slug'        => Str::slug($request->name),
+            'category_id' => $category_id,
+            'price'       => $request->price,
+            'stock'       => $request->stock,
+            'description' => $request->description,
+            'image'       => $imagePath,
+        ]);
+
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'Product updated successfully');
     }
 
     /**
