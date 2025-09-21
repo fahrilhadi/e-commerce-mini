@@ -33,10 +33,8 @@
                                            class="px-2 py-1 rounded-lg border border-gray-300 hover:border-black text-sm transition shadow">
                                             Edit
                                         </a>
-                                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
+                                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST">
+                                            <button type="button" onclick="openDeleteModal({{ $product->id }}, '{{ addslashes($product->name) }}')"
                                                     class="px-2 py-1 rounded-lg border border-gray-300 hover:border-red-500 hover:text-red-500 text-sm transition shadow">
                                                 Delete
                                             </button>
@@ -57,4 +55,44 @@
             <x-pagination :paginator="$products" />
         </div>
     </div>
+
+    <div id="deleteModal" class="fixed inset-0 backdrop-blur-sm z-[9999] hidden items-center justify-center">
+      <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm text-center">
+        <h2 class="text-lg font-semibold mb-2">Delete Product</h2>
+        <p class="text-gray-600 text-sm mb-4">Are you sure you want to delete <span id="productTitle" class="font-medium"></span>?</p>
+        <form id="deleteForm" method="POST" class="flex justify-center gap-3">
+          @csrf
+          @method('DELETE')
+          <button type="button" onclick="closeDeleteModal()" 
+                  class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:border-black transition shadow">
+            Cancel
+          </button>
+          <button type="submit" 
+                  class="px-4 py-2 rounded-lg border border-gray-300 hover:border-red-500 hover:text-red-500 text-sm transition shadow">
+            Delete
+          </button>
+        </form>
+      </div>
+    </div>
 @endsection
+
+@push('addon-script')
+  <script>
+    function openDeleteModal(productId, productTitle) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        const titleSpan = document.getElementById('productTitle');
+
+        form.action = '/admin/products/' + productId;
+        titleSpan.textContent = productTitle;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+  </script>
+@endpush
