@@ -11,6 +11,7 @@ Route::get('/', [ProductController::class, 'index'])->name('products.index');
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('products', ProductController::class)->except(['index','show']);
 });
 
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');

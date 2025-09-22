@@ -36,7 +36,7 @@
                   Back
                 </a>
               @endif
-              @if (request()->routeIs('admin.dashboard'))
+              @if (request()->routeIs('admin.dashboard','dashboard'))
                 {{-- Logout --}}
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
