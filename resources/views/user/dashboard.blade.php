@@ -89,7 +89,7 @@
                         @empty
                             <tr>
                                 <td colspan="5" class="py-6 text-center text-gray-500">
-                                    No orders found. <a href="" class="text-black underline">Create one</a>.
+                                    No orders found.
                                 </td>
                             </tr>
                         @endforelse

@@ -38,21 +38,56 @@
                         {{ $product->description }}
                     </p>
 
-                    {{-- CTA (Guest User) --}}
+                    {{-- CTA --}}
                     @guest
                         <div class="flex space-x-2">
                             <a href="{{ route('login') }}" 
                             class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:border-black hover:bg-gray-50 transition">
-                                Add to Cart
+                            Add to Cart
                             </a>
                             <a href="{{ route('products.index') }}" 
                             class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:border-black hover:bg-gray-50 transition">
-                                Back to List
+                            Back to List
                             </a>
                         </div>
                     @endguest
+
+                    @auth
+                        <form action="{{ route('cart.store', $product->id) }}" method="POST" class="flex space-x-2">
+                            @csrf
+                            <button type="submit" 
+                                    class="add-to-cart-btn px-4 py-2 bg-black text-white text-sm rounded-lg hover:bg-gray-800 transition">
+                                Add to Cart
+                            </button>
+                            <a href="{{ route('products.index') }}" 
+                            class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:border-black hover:bg-gray-50 transition">
+                            Back to List
+                            </a>
+                        </form>
+                    @endauth
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+<script>
+  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          fetch(this.href, {
+              method: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                  'Accept': 'application/json'
+              }
+          })
+          .then(res => res.json())
+          .then(data => {
+              if (data.success) {
+                  document.getElementById('cart-count').innerText = data.cart_count;
+              }
+          });
+      });
+  });
+</script>

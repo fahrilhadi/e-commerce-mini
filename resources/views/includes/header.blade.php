@@ -5,6 +5,22 @@
       @if (Auth::check())
           {{-- Kalau sudah login --}}
           @if (request()->is('/'))
+              @php
+              $cartCount = auth()->check() 
+                  ? \App\Models\CartItem::whereHas('cart', fn($q) => $q->where('user_id', auth()->id()))->sum('quantity')
+                  : 0;
+              @endphp
+
+              <a href="{{ route('cart.index') }}" 
+                class="relative px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
+                  My Cart
+                  @if($cartCount > 0)
+                      <span id="cart-count"
+                            class="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                          {{ $cartCount }}
+                      </span>
+                  @endif
+              </a>
               {{-- Kalau user sedang di URL / --}}
               <a href="{{ route('dashboard') }}" 
                  class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
@@ -31,12 +47,28 @@
                 </a>
               @endif
               @if (request()->routeIs('products.show'))
+                @php
+                $cartCount = auth()->check() 
+                    ? \App\Models\CartItem::whereHas('cart', fn($q) => $q->where('user_id', auth()->id()))->sum('quantity')
+                    : 0;
+                @endphp
+
+                <a href="{{ route('cart.index') }}" 
+                  class="relative px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
+                    My Cart
+                    @if($cartCount > 0)
+                        <span id="cart-count"
+                              class="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+                </a>
                 <a href="{{ route('products.index') }}" 
                   class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
                   Back
                 </a>
               @endif
-              @if (request()->routeIs('admin.dashboard','dashboard'))
+              @if (request()->routeIs('admin.dashboard'))
                 {{-- Logout --}}
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
@@ -45,6 +77,38 @@
                       Logout
                   </button>
                 </form>
+              @endif
+              @if (request()->routeIs('dashboard'))
+                @php
+                $cartCount = auth()->check() 
+                    ? \App\Models\CartItem::whereHas('cart', fn($q) => $q->where('user_id', auth()->id()))->sum('quantity')
+                    : 0;
+                @endphp
+
+                <a href="{{ route('cart.index') }}" 
+                  class="relative px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
+                    My Cart
+                    @if($cartCount > 0)
+                        <span id="cart-count"
+                              class="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+                </a>
+                {{-- Logout --}}
+                <form method="POST" action="{{ route('logout') }}">
+                  @csrf
+                  <button type="submit" 
+                      class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
+                      Logout
+                  </button>
+                </form>
+              @endif
+              @if (request()->routeIs('cart.index'))
+                <a href="{{ route('dashboard') }}" 
+                    class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
+                    Back
+                </a>
               @endif
           @endif
       @else

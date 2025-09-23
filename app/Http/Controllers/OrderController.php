@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -12,7 +14,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        // 
     }
 
     /**
@@ -20,7 +22,22 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        $user = Auth::user();
+
+        // ambil cart user dengan relasi product
+        $cartItems = Cart::with('product')
+                        ->where('user_id', $user->id)
+                        ->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty!');
+        }
+
+        $total = $cartItems->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        });
+
+        return view('user.orders.checkout', compact('cartItems', 'total'));
     }
 
     /**

@@ -22,4 +22,7 @@ class CartItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    // otomatis eager load relasi cart
+    protected $with = ['cart'];
 }
