@@ -52,7 +52,7 @@
                             <tr class="text-sm text-gray-700 hover:bg-gray-50">
                                 <td class="py-3 px-4 border-b">#{{ $order->id }}</td>
                                 <td class="py-3 px-4 border-b">{{ $order->user->name ?? 'Guest' }}</td>
-                                <td class="py-3 px-4 border-b">${{ number_format($order->total, 2) }}</td>
+                                <td class="py-3 px-4 border-b">${{ number_format($order->total_amount, 2) }}</td>
                                 <td class="py-3 px-4 border-b">
                                     @if ($order->status === 'pending')
                                         <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-lg">Pending</span>

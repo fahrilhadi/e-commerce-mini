@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
-use App\Models\CartItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CartController extends Controller
 {
@@ -15,26 +15,32 @@ class CartController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
+        // Get authenticated user
+        $user = Auth::user();
 
-        // Ambil cart user beserta item + product
-        $cart = Cart::with('items.product')->where('user_id', $user->id)->first();
+        // ambil cart user (jangan kembalikan array kosong)
+        $cart = Cart::where('user_id', $user->id)->first();
 
-        // Kalau user belum punya cart
-        if (!$cart || $cart->items->isEmpty()) {
-            return view('user.cart.index', [
-                'cartItems' => [],
-                'total' => 0,
-            ]);
+        if (!$cart) {
+            // kalau cart belum ada → buat paginator kosong
+            $cartItems = new LengthAwarePaginator(
+                collect(), // data kosong
+                0,         // total
+                3,         // perPage
+                1,         // current page
+                ['path' => request()->url()]
+            );
+
+            $total = 0;
+        } else {
+            // ambil item beserta product (akan menghasilkan Collection)
+            $cartItems = $cart->items()->with('product')->paginate(3);
+
+            // hitung total dari collection
+            $total = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
         }
 
-        // Hitung total
-        $total = $cart->items->sum(fn($item) => $item->product->price * $item->quantity);
-
-        return view('user.cart.index', [
-            'cartItems' => $cart->items,
-            'total' => $total,
-        ]);
+        return view('user.cart.index', compact('cartItems', 'total'));
     }
 
 
@@ -51,7 +57,8 @@ class CartController extends Controller
      */
     public function store(Request $request, Product $product)
     {
-        $user = auth()->user();
+        // Get authenticated user
+        $user = Auth::user();
 
         // Ambil atau buat cart user
         $cart = Cart::firstOrCreate(['user_id' => $user->id]);
@@ -107,7 +114,8 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $user = auth()->user();
+        // Get authenticated user
+        $user = Auth::user();
         $cart = Cart::with('items')->where('user_id', $user->id)->first();
         if (!$cart) {
             return redirect()->back()->with('error', 'Cart not found');
@@ -134,7 +142,8 @@ class CartController extends Controller
      */
     public function destroy($itemId)
     {
-        $user = auth()->user();
+        // Get authenticated user
+        $user = Auth::user();
         $cart = Cart::with('items')->where('user_id', $user->id)->first();
 
         if (!$cart) {

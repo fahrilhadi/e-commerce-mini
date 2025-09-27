@@ -6,6 +6,7 @@ use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 
 // Guest (Public User)
@@ -18,6 +19,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/cart/store/{product}', [CartController::class, 'store'])->name('cart.store');
     Route::patch('/cart/{itemId}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{itemId}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::resource('checkout', CheckoutController::class);
 });
 
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');

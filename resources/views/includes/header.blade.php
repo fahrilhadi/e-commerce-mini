@@ -110,6 +110,12 @@
                     Back
                 </a>
               @endif
+              @if (request()->routeIs('checkout.index'))
+                <a href="{{ route('cart.index') }}" 
+                    class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
+                    Back
+                </a>
+              @endif
           @endif
       @else
           {{-- Guest --}}

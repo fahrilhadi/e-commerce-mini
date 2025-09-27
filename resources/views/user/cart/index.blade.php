@@ -56,15 +56,20 @@
                         @endforelse
                     </tbody>
                 </table>
-                <div class="flex justify-between items-center mt-4">
-                    <span class="text-lg font-semibold text-gray-700">Total: ${{ number_format($total, 2) }}</span>
-                    <a href="#" 
-                    class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
-                        Proceed to Checkout
-                    </a>
-                </div>
+                {{-- Tampilkan total & checkout hanya jika cart tidak kosong --}}
+                @if (!$cartItems->isEmpty())
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-lg font-semibold text-gray-700">
+                            Total: ${{ number_format($total, 2) }}
+                        </span>
+                        <a href="{{ route('checkout.index') }}" 
+                           class="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow">
+                            Proceed to Checkout
+                        </a>
+                    </div>
+                @endif
             </div>
-            {{-- <x-pagination :paginator="$cartItems" /> --}}
+            <x-pagination :paginator="$cartItems" />
         </div>
     </div>
 @endsection
